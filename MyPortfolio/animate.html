@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Carousel with Automatic Scroll, Previous, Next, and Pagination</title>
+  <style>
+    .scrollable-container {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-container {
+      display: flex;
+      /* Remove overflow-x */
+      overflow: hidden;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    }
+
+    .cards {
+      margin: 0 20px;
+      text-align: center;
+      background-color: #fd1111;
+      width: 16rem;
+      height: 20rem;
+      border-radius: 10px;
+      scroll-snap-align: start;
+    }
+
+    .card-body img {
+      width: 8rem;
+      height: 8rem;
+      border-radius: 50%;
+      box-shadow: 3px 10px 8px 4px #181717;
+    }
+
+    .card-title1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-style: italic;
+      margin-top: 20px;
+      font-family: "Times New Roman", serif;
+    }
+
+    .card-text1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-style: italic;
+      font-family: "Times New Roman", serif;
+    }
+
+    #prev-arrow,
+    #next-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
+      z-index: 1;
+    }
+
+    #prev-arrow {
+      left: 10px;
+    }
+
+    #next-arrow {
+      right: 10px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      cursor: pointer;
+      height: 10px;
+      width: 10px;
+      margin: 0 5px;
+      background-color: #bbb;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scrollable-container">
+    <div class="carousel-container">
+      <!-- Your carousel items -->
+    </div>
+    <button id="prev-arrow">&lt;</button>
+    <button id="next-arrow">&gt;</button>
+    <div class="pagination"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const carouselContainer = document.querySelector(".carousel-container");
+      const prevArrow = document.getElementById("prev-arrow");
+      const nextArrow = document.getElementById("next-arrow");
+      const pagination = document.querySelector(".pagination");
+
+      // Calculate number of slides
+      const totalSlides = document.querySelectorAll(".cards").length;
+
+      // Populate pagination dots
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement("span");
+        dot.classList.add("dot");
+        pagination.appendChild(dot);
+      }
+
+      // Highlight active dot
+      const dots = document.querySelectorAll(".dot");
+      let activeIndex = 0;
+      dots[activeIndex].classList.add("active");
+
+      // Next button functionality
+      nextArrow.addEventListener("click", () => {
+        activeIndex = (activeIndex + 1) % totalSlides;
+        carouselContainer.style.transform = `translateX(-${activeIndex * 100}%)`;
+        updatePagination();
+      });
+
+      // Previous button functionality
+      prevArrow.addEventListener("click", () => {
+        activeIndex = (activeIndex - 1 + totalSlides) % totalSlides;
+        carouselContainer.style.transform = `translateX(-${activeIndex * 100}%)`;
+        updatePagination();
+      });
+
+      // Pagination functionality
+      dots.forEach((dot, index) => {
+        dot.addEventListener("click", () => {
+          activeIndex = index;
+          carouselContainer.style.transform = `translateX(-${activeIndex * 100}%)`;
+          updatePagination();
+        });
+      });
+
+      // Update pagination dots
+      function updatePagination() {
+        dots.forEach(dot => dot.classList.remove("active"));
+        dots[activeIndex].classList.add("active");
+      }
+    });
+  </script>
+</body>
+</html>
